@@ -1,0 +1,45 @@
+apiVersion: '2021-07-01'
+location: 'eastus'
+name: ids-ipfs
+properties:
+  containers:
+  - name: ipfs
+    properties:
+      image: ipfs/go-ipfs:v0.10.0
+      ports:
+      - port: 4001
+      - port: 5001
+      - port: 8080
+      resources:
+        requests:
+          cpu: 1.0
+          memoryInGB: 1.5
+      volumeMounts:
+      - mountPath: /data/ipfs
+        name: ipfsdatavolume
+      - mountPath: /export
+        name: ipfsexportvolume
+  osType: Linux
+  restartPolicy: Always
+  ipAddress:
+    type: Private
+    ports:
+    - port: 4001
+    - port: 5001
+    - port: 8080
+  subnetIds:
+    - id: /subscriptions/62e9b4db-ec2a-4efe-885a-1e8bd4ae10ff/resourceGroups/RS_Networking/providers/Microsoft.Network/virtualNetworks/VNet_PRD_General/subnets/VNet_PRD_Containers
+      name: VNet_PRD_Containers
+  volumes:
+  - name: ipfsdatavolume
+    azureFile:
+      sharename: ipfsdata
+      storageAccountName: ipfsidentidadsoberana
+      storageAccountKey: rLbEIDUAweY0o6KyrL/5CUESJqozYXnauukG83TUg5681FUvnpNelQu3suRJtuE922zPlbYYItiQ+AStu0o8yQ==
+  - name: ipfsexportvolume
+    azureFile:
+      sharename: ipfsexport
+      storageAccountName: ipfsidentidadsoberana
+      storageAccountKey: rLbEIDUAweY0o6KyrL/5CUESJqozYXnauukG83TUg5681FUvnpNelQu3suRJtuE922zPlbYYItiQ+AStu0o8yQ==
+tags: {}
+type: Microsoft.ContainerInstance/containerGroups
