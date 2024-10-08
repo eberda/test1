@@ -10,22 +10,22 @@ steps:
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/leandroamore/ppdemo/main/index.php" -OutFile "$(Pipeline.Workspace)\index.php"
   displayName: 'Descargar index.php desde GitHub'
 
-# Copiar el archivo a VM1 usando SCP desde Windows
-- task: SSH@0
+# Copiar el archivo a VM1 usando la tarea Copy Files Over SSH
+- task: CopyFilesOverSSH@0
   inputs:
-    sshEndpoint: 'vm1-ssh'
-    runOptions: 'commands'
-    commands: |
-      sudo rm -rf /var/www/html/index.php
-      scp C:\agent\_work\1\index.php adminuser@10.0.1.4:/var/www/html/index.php
-      sudo systemctl restart nginx
+    sshEndpoint: 'vm1-ssh'   # Asegúrate de que la conexión SSH esté configurada correctamente
+    sourceFolder: '$(Pipeline.Workspace)'  # Carpeta donde se descargó el archivo en el agente
+    contents: 'index.php'  # Archivo a copiar
+    targetFolder: '/var/www/html'  # Carpeta en la VM donde se copiará el archivo
+    cleanTargetFolder: false  # No eliminar archivos anteriores
+    overwrite: true  # Sobrescribir el archivo si ya existe
 
-# Copiar el archivo a VM2 usando SCP desde Windows
-- task: SSH@0
+# Copiar el archivo a VM2 usando la tarea Copy Files Over SSH
+- task: CopyFilesOverSSH@0
   inputs:
-    sshEndpoint: 'vm2-ssh'
-    runOptions: 'commands'
-    commands: |
-      sudo rm -rf /var/www/html/index.php
-      scp C:\agent\_work\1\index.php adminuser@10.0.1.5:/var/www/html/index.php
-      sudo systemctl restart nginx
+    sshEndpoint: 'vm2-ssh'  # Mismo proceso para la segunda VM
+    sourceFolder: '$(Pipeline.Workspace)'
+    contents: 'index.php'
+    targetFolder: '/var/www/html'
+    cleanTargetFolder: false
+    overwrite: true
