@@ -1,0 +1,29 @@
+trigger:
+- main
+
+pool:
+  name: 'AgentPP01'  # Usando el self-hosted agent pool
+
+steps:
+# Descargar el archivo demodb.bacpac desde GitHub
+- powershell: |
+    Invoke-WebRequest -Uri "https://github.com/leandroamore/ppdemo/blob/main/demodb.bacpac" -OutFile "$(Pipeline.Workspace)\demodb.bacpac"
+  displayName: 'Descargar demodb.bacpac desde GitHub'
+
+# Instalar SqlPackage en el agente self-hosted (solo si no está instalado)
+- powershell: |
+    if (-not (Get-Command SqlPackage -ErrorAction SilentlyContinue)) {
+        Invoke-WebRequest -Uri "https://aka.ms/sqlpackage-linux" -OutFile "$(Pipeline.Workspace)\sqlpackage.zip"
+        Expand-Archive -Path "$(Pipeline.Workspace)\sqlpackage.zip" -DestinationPath "$(Pipeline.Workspace)\sqlpackage"
+        $env:PATH += ";$(Pipeline.Workspace)\sqlpackage"
+    }
+  displayName: 'Instalar SqlPackage (si es necesario)'
+
+# Restaurar la base de datos en Azure SQL Server
+- powershell: |
+    $bacpacPath = "$(Pipeline.Workspace)\demodb.bacpac"
+    $connectionString = "Data Source=sql-server-eber-eval.database.windows.net;Initial Catalog=demo-sql-db;User ID=sqladmin;Password=Password123!;"
+
+    # Ejecutar la restauración usando SqlPackage
+    SqlPackage /Action:Import /SourceFile:$bacpacPath /TargetConnectionString:$connectionString
+  displayName: 'Restaurar base de datos desde demodb.bacpac a Azure SQL'
