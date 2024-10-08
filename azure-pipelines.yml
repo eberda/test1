@@ -2,12 +2,12 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'AgentPP01'  # Cambiado para usar tu agent pool self-hosted
 
 steps:
 - task: SSH@0
   inputs:
-    sshEndpoint: 'vm1-ssh'  # Nombre de la conexión SSH en Azure DevOps
+    sshEndpoint: 'vm1-ssh'
     runOptions: 'commands'
     commands: |
       sudo rm -rf /var/www/html/index.php
@@ -16,7 +16,7 @@ steps:
 
 - task: SSH@0
   inputs:
-    sshEndpoint: 'vm2-ssh'  # Nombre de la conexión SSH en Azure DevOps
+    sshEndpoint: 'vm2-ssh'
     runOptions: 'commands'
     commands: |
       sudo rm -rf /var/www/html/index.php
