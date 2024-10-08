@@ -17,7 +17,7 @@ steps:
     runOptions: 'commands'
     commands: |
       sudo rm -rf /var/www/html/index.php
-      scp C:/agent/_work/1/index.php adminuser@10.0.1.4:/var/www/html/index.php
+      scp C:\agent\_work\1\index.php adminuser@10.0.1.4:/var/www/html/index.php
       sudo systemctl restart nginx
 
 # Copiar el archivo a VM2 usando SCP desde Windows
@@ -27,5 +27,5 @@ steps:
     runOptions: 'commands'
     commands: |
       sudo rm -rf /var/www/html/index.php
-      scp C:/agent/_work/1/index.php adminuser@10.0.1.5:/var/www/html/index.php
+      scp C:\agent\_work\1\index.php adminuser@10.0.1.5:/var/www/html/index.php
       sudo systemctl restart nginx
