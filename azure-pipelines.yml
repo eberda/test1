@@ -2,12 +2,15 @@ trigger:
 - main
 
 pool:
-  name: 'AgentPP01'  # Usando tu self-hosted agent pool
+  name: 'AgentPP01'  # Usando tu self-hosted agent pool en Windows
 
 steps:
-# Descargar el archivo index.php desde GitHub en el self-hosted agent
-- script: |
-    wget -O $(Pipeline.Workspace)/index.php https://raw.githubusercontent.com/leandroamore/ppdemo/main/index.php
+# Descargar el archivo index.php desde GitHub en el agente Windows usando PowerShell
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      Invoke-WebRequest -Uri https://raw.githubusercontent.com/leandroamore/ppdemo/main/index.php -OutFile $(Pipeline.Workspace)\index.php
   displayName: 'Descargar index.php desde GitHub'
 
 # Copiar el archivo a VM1 usando SSH
