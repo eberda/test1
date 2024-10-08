@@ -5,9 +5,6 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- checkout: none  # No es necesario hacer checkout porque usamos una URL pública
-
-# Descargar y desplegar en VM1
 - task: SSH@0
   inputs:
     sshEndpoint: 'vm1-ssh'  # Nombre de la conexión SSH en Azure DevOps
@@ -16,9 +13,7 @@ steps:
       sudo rm -rf /var/www/html/index.php
       sudo wget -O /var/www/html/index.php https://raw.githubusercontent.com/leandroamore/ppdemo/main/index.php
       sudo systemctl restart nginx
-  failOnStderr: true
 
-# Descargar y desplegar en VM2
 - task: SSH@0
   inputs:
     sshEndpoint: 'vm2-ssh'  # Nombre de la conexión SSH en Azure DevOps
@@ -27,4 +22,3 @@ steps:
       sudo rm -rf /var/www/html/index.php
       sudo wget -O /var/www/html/index.php https://raw.githubusercontent.com/leandroamore/ppdemo/main/index.php
       sudo systemctl restart nginx
-  failOnStderr: true
