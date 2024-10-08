@@ -5,11 +5,10 @@ pool:
   name: 'AgentPP01'  # Usando tu self-hosted agent pool
 
 steps:
-# Descargar el archivo en el agente self-hosted
-- task: DownloadPipelineArtifact@2
-  inputs:
-    artifactName: 'index.php'
-    downloadPath: '$(Pipeline.Workspace)'
+# Descargar el archivo index.php desde GitHub en el self-hosted agent
+- script: |
+    wget -O $(Pipeline.Workspace)/index.php https://raw.githubusercontent.com/leandroamore/ppdemo/main/index.php
+  displayName: 'Descargar index.php desde GitHub'
 
 # Copiar el archivo a VM1 usando SSH
 - task: SSH@0
